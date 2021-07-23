@@ -1,21 +1,43 @@
 {
-  description = "A very basic flake";
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    utils.url = "github:numtide/flake-utils";
+    naersk = {
+      url = "github:nmattia/naersk";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-  inputs.flake-utils.url = "github:numtide/flake-utils";
-
-  outputs = { self, nixpkgs, flake-utils }:
-
-    flake-utils.lib.eachDefaultSystem (system:
-      let pkgs = nixpkgs.legacyPackages.${system}; in
+  outputs = { self, nixpkgs, utils, naersk }:
+    utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = nixpkgs.legacyPackages."${system}";
+        naersk-lib = naersk.lib."${system}";
+      in
       rec {
+        # `nix build`
+        packages.i3statuspp = naersk-lib.buildPackage {
+          pname = "i3statuspp";
+          version = "0.1.0";
+          root = ./.;
 
-        packages = {
-          i3statuspp = pkgs.callPackage ./default.nix { };
+          meta = with pkgs.lib; {
+            description = "Extend i3status functionality";
+            homepage = "https://github.com/michaeladler/i3statuspp";
+            license = licenses.asl20;
+          };
         };
-
         defaultPackage = packages.i3statuspp;
 
-      });
+        # `nix run`
+        apps.i3statuspp = utils.lib.mkApp {
+          drv = packages.i3statuspp;
+        };
+        defaultApp = apps.i3statuspp;
 
+        # `nix develop`
+        devShell = pkgs.mkShell {
+          nativeBuildInputs = with pkgs; [ rustc cargo ];
+        };
+      });
 }

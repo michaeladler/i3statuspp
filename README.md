@@ -1,5 +1,5 @@
-[![test](https://github.com/michaeladler/i3statuspp/actions/workflows/test.yml/badge.svg)](https://github.com/michaeladler/i3statuspp/actions/workflows/test.yml)
-[![golangci-lint](https://github.com/michaeladler/i3statuspp/actions/workflows/golangci-lint.yml/badge.svg)](https://github.com/michaeladler/i3statuspp/actions/workflows/golangci-lint.yml)
+[![build](https://github.com/michaeladler/i3statuspp/actions/workflows/build.yml/badge.svg)](https://github.com/michaeladler/i3statuspp/actions/workflows/build.yml)
+[![ci](https://github.com/michaeladler/i3statuspp/actions/workflows/ci.yml/badge.svg)](https://github.com/michaeladler/i3statuspp/actions/workflows/ci.yml)
 
 # i3statuspp
 
@@ -8,17 +8,17 @@ and allows you to launch external commands when an event matches a custom rule.
 
 ## Building
 
-`go build`
+`cargo build`
 
 ## Installation
 
-`go install` and adjust your i3 config:
+`cargo install` and adjust your i3 config:
 
 ```config
 bar {
-  status_command ~/go/bin/i3statuspp
+  status_command i3statuspp
   # to debug events, redirect stderr to a file:
-  # status_command ~/go/bin/i3statuspp 2>/tmp/i3statuspp.log
+  # status_command i3statuspp 2>/tmp/i3statuspp.log
   ...
 }
 ```
